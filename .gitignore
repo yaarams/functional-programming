@@ -1,0 +1,7 @@
+.idea
+.vscode
+target
+.dotty-ide-artifact
+.dotty-ide.json
+project/target
+project/project
