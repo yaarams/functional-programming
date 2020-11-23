@@ -33,13 +33,11 @@ object maybeMonad {
     // def flatMap[B](f: A => Maybe[B]): Maybe[B] = Maybe.flatten(this.map(f)) - can't use it if we define map in terms of flatMap
     
     // applicative (only called ap because in scally apply has a special meaning)
-//    def ap[B](ff: Maybe[A => B]): Maybe[B] = this match {
-//      case Just(x) => ff match {
-//        case Just(f) => Just(f(x))
-//        case None => None
-//      }
-//      case None => None
+//    def ap[B](ff: Maybe[A => B]): Maybe[B] = (this, ff) match {
+//      case (Just(x), Just(f)) => Just(f(x))
+//      case _ => None
 //    }
+
 
     // ap implementation in terms of flatMap (this means flatMap is a stronger abstraction)
      def ap[B](ff: Maybe[A => B]): Maybe[B] = ff.flatMap(f => this.map(f))
