@@ -23,3 +23,19 @@ val b = for {
 
 
 
+def safe_sqrt(x: Double): Maybe[Double] = x match {
+  case x if x < 0 => Maybe.nothing()
+  case x => Maybe.pure(math.sqrt(x))
+}
+
+// This barely different than the not safe version but we get the safety
+def safeSolvePolynom2(a: Double, b: Double, c: Double): Maybe[(Double, Double)] =
+  for (
+    s <- safe_sqrt(math.pow(b,2) - 4 * a * c);
+    d = 2 * a;
+    solution1 = (-b + s) / d;
+    solution2 = (-b - s) / d
+  ) yield (solution1, solution2)
+
+safeSolvePolynom2(4, 0, 0)
+safeSolvePolynom2(1, 0, 8)

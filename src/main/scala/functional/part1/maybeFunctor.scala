@@ -9,6 +9,11 @@ object maybeFunctor {
       case None => default
     }
 
+    def get: A = this match {
+      case Just(x) => x
+      case None => throw IllegalStateException("Can't get none")
+    }
+    
     def isDefined: Boolean = this match {
       case Just(x) => true
       case None => false
@@ -22,7 +27,7 @@ object maybeFunctor {
     
   }
 
-  case class Just[+A](get: A) extends Maybe[A]
+  case class Just[+A](v: A) extends Maybe[A]
 
   case object None extends Maybe[Nothing]
 

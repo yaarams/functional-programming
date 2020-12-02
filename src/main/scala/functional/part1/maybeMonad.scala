@@ -8,7 +8,12 @@ object maybeMonad {
       case Just(x) => x
       case None => default
     }
-
+    
+    def get: A = this match {
+      case Just(x) => x
+      case None => throw IllegalStateException("Can't get none")
+    }
+    
     def isDefined: Boolean = this match {
       case Just(x) => true
       case None => false
@@ -39,11 +44,11 @@ object maybeMonad {
 //    }
 
 
-    // ap implementation in terms of flatMap (this means flatMap is a stronger abstraction)
+    // ap implementation in terms of flatMap (this means flatMap is a more general abstraction)
      def ap[B](ff: Maybe[A => B]): Maybe[B] = ff.flatMap(f => this.map(f))
   }
 
-  case class Just[+A](get: A) extends Maybe[A]
+  case class Just[+A](v: A) extends Maybe[A]
 
   case object None extends Maybe[Nothing]
 
