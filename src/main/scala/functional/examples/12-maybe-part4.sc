@@ -1,4 +1,4 @@
-import functional.part1.maybeMonad._
+import functional.part1.maybePart4._
 
 val m1 = Maybe.pure(2)
 val m2 = Maybe.pure(7)

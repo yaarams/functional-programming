@@ -1,6 +1,6 @@
 package functional.part1
 
-object maybeFunctor {
+object maybePart1 {
 
   trait Maybe[+A] {
 
@@ -18,13 +18,6 @@ object maybeFunctor {
       case Just(x) => true
       case None => false
     }
-
-    // functor
-    def map[B](f: A => B): Maybe[B] = this match {
-      case Just(x) => Just(f(x))
-      case None => None
-    }
-    
   }
 
   case class Just[+A](v: A) extends Maybe[A]
@@ -36,8 +29,6 @@ object maybeFunctor {
     inline def pure[A](v: A): Maybe[A] = Just(v)
     inline def nothing(): Maybe[Nothing] = None
 
-    def lift[A, B](f: A => B): Maybe[A] => Maybe[B] = (m) => m.map(f)
-    
   }
 
 }

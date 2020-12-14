@@ -1,4 +1,4 @@
-import functional.part1.maybeBasic._
+import functional.part1.maybePart1._
 
 def safeDiv(x: Int, y: Int): Maybe[Int] = y match {
   case 0 => Maybe.nothing()

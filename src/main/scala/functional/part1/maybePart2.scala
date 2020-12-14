@@ -1,6 +1,6 @@
 package functional.part1
 
-object maybeBasic {
+object maybePart2 {
 
   trait Maybe[+A] {
 
@@ -18,6 +18,9 @@ object maybeBasic {
       case Just(x) => true
       case None => false
     }
+
+    def map[B](f: A => B): Maybe[B] = Maybe.map(this, f)
+    
   }
 
   case class Just[+A](v: A) extends Maybe[A]
@@ -26,9 +29,18 @@ object maybeBasic {
 
   object Maybe {
 
+    // constructors (helps with scala type system)
     inline def pure[A](v: A): Maybe[A] = Just(v)
+    
     inline def nothing(): Maybe[Nothing] = None
 
+    def map[A, B](a: Maybe[A], f: A => B): Maybe[B] = a match {
+      case Just(x) => Just(f(x))
+      case None => None
+    }
+
+    def lift[A, B](f: A => B): Maybe[A] => Maybe[B] = (m) => map(m, f)
+    
   }
 
 }
