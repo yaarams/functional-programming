@@ -1,5 +1,7 @@
 package functional.part2
 
+import functional.part1.maybePart4.Maybe
+
 object listZippers {
 
   case class ZipperState[A](
@@ -7,58 +9,74 @@ object listZippers {
       after: List[A]
   )
 
-  case class ListZipper[A, B](f: ZipperState[A] => Option[(B, ZipperState[A])]) {
+  case class ListZipper[A, B](f: ZipperState[A] => (B, ZipperState[A])) {
     
-    def apply(s: ZipperState[A]): Option[(B, ZipperState[A])] = f(s)
+    def apply(s: ZipperState[A]): (B, ZipperState[A]) = f(s)
 
     def map[C](f: B => C): ListZipper[A, C] = ListZipper.map(this, f)
 
     def flatMap[C](f: B => ListZipper[A, C]): ListZipper[A, C] = ListZipper.flatMap(this, f)
+    
   }
 
   object ListZipper {
     
-    def pure[A, B](v: B): ListZipper[A, B] = ListZipper(s => {
-      Some((v, s))
-    })
+    def pure[A, B](v: B): ListZipper[A, B] = ListZipper(s => (v, s))
     
     def map[A, B, C](zipper: ListZipper[A, B], f: B => C): ListZipper[A, C] = ListZipper(s => {
-      zipper(s).map{case (r, s1) => (f(r), s1)}
+      val (r, s1) = zipper(s)
+      (f(r), s1)
     })
    
     def flatMap[A, B, C](zipper: ListZipper[A, B], f: B => ListZipper[A, C]): ListZipper[A, C] = ListZipper(s => {
-        zipper(s).flatMap{case (r, s1) => f(r)(s1)}
+       val (r, s1) = zipper(s)
+       f(r)(s1)
     })
     
   }
-    
-  def moveRight[A]: ListZipper[A, Unit] = ListZipper(s => s.after.tail match {
-    case Nil => None
-    case h :: t =>  // pattern matching can destruct on custom operators using a special function calle unapply
-      Some(((), ZipperState(h :: s.before, t)))  // the empty tuple is the only value in the Unit type
-  })
- 
-  def insert[A](v: A): ListZipper[A, Unit] = ListZipper(s => {
-    Some((), s.copy(after = v :: s.after))
-  })
- 
-  def moveToStart[A]: ListZipper[A, Unit] = ListZipper(s => {
-    Some((), ZipperState(List.empty, s.before.reverse ::: s.after)) // can implement it more efficiently here
-  })
- 
- 
-  def insertAfterSecond[A](v: A): ListZipper[A, Unit] = 
-    for(
-      _ <- moveRight;
-      _ <- moveRight;
-      _ <- insert(v)
-    ) yield ()
   
+  def moveRight[A]: ListZipper[A, Unit] = ListZipper(s => s.after match {
+    case Nil => ((), s) // can't move right, stay where you are
+    case h :: t =>  // pattern matching can destruct on custom operators using a special function calle unapply
+      ((), ZipperState(h :: s.before, t))
+  })
 
+  def moveLeft[A]: ListZipper[A, Unit] = ListZipper(s => s.before match {
+    case Nil => ((), s) // can't move left, stay where you are
+    case h :: t =>  // pattern matching can destruct on custom operators using a special function calle unapply
+      ((), ZipperState(t, h :: s.after))
+  })
+  
+  def insert[A](v: A): ListZipper[A, Unit] = ListZipper(s => {
+    ((), s.copy(before = v :: s.before))
+  })
+
+  def delete[A]: ListZipper[A, Unit] = ListZipper(s => s.before match {
+    case Nil => ((), s)
+    case h :: t => ((), s.copy(before = t))
+  })
+
+  def isEnd[A]: ListZipper[A, Boolean] = ListZipper(s => (s.after.isEmpty, s))
+  
+  def isStart[A]: ListZipper[A, Boolean] = ListZipper(s => (s.before.isEmpty, s))
+
+  
+  // this gets the value before 
+  def get[A]: ListZipper[A, Option[A]] = ListZipper(s => s.before match {
+    case Nil => (None, s)
+    case h :: _ => (Some(h), s)
+  })
+  
+  def moveToStart[A]: ListZipper[A, Unit] = ListZipper(s => {
+    ((), ZipperState(List.empty, s.before.reverse ::: s.after)) // can implement it more efficiently here
+  })
+  
   // scala 3 syntax to add methods to existing classes (in scala 2 this can be done with implicit classes conversions)
   extension [A](lst: List[A]) {
-    def runZipper(zipper: ListZipper[A, Unit]): Option[List[A]] = 
-      zipper.flatMap(_ => moveToStart)(ZipperState(List.empty, lst)).map{case (r, s) => s.after}
+    def runZipper(zipper: ListZipper[A, Unit]): List[A] = { 
+      val (r, s) = zipper.flatMap(_ => moveToStart)(ZipperState(List.empty, lst))
+      s.after
+    }
   }
   
 }
