@@ -2,7 +2,7 @@ import functional.part1.maybePart1._
 
 def safeDiv(x: Int, y: Int): Maybe[Int] = y match {
   case 0 => Maybe.nothing()
-  case y => Just(x / y)
+  case y => Maybe.pure(x / y)
 }
 
 safeDiv(12, 4)
