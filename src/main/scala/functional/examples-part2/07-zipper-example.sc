@@ -31,4 +31,18 @@ lst.runZipper(
   ) yield ()
 )
 
+val add1: ListZipper[Int, Unit] = for (
+  x <- get;
+  _ <- replace(x.get + 1)
+) yield ()
 
+
+
+// There is some wierdness with how we defined the base operations
+// so we need to move on place right first before starting and it
+// ends up not updating the last element becuase we reach the end and
+// don't do the op,
+// we can design a more consistent sematics so that this will work better
+lst.runZipper(
+  moveRight.flatMap(_ => applyUntilRight(isEnd, add1))
+)
