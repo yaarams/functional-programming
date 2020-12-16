@@ -45,6 +45,7 @@ object maybePart4 {
 //    }
 //    
 
+    // Can now be implemented in terms of flatMap and pure
     def map[A, B](ma: Maybe[A], f: A => B): Maybe[B] = flatMap(ma, a => pure(f(a)))
     
     def flatten[A](m: Maybe[Maybe[A]]): Maybe[A] = m match {
@@ -61,12 +62,12 @@ object maybePart4 {
       case None => None
     }
 
-//    Can now implemnet using flaMap (which means flatMap is more general)    
 //    def ap[A, B](ma: Maybe[A], ff: Maybe[A => B]): Maybe[B] = (ma, ff) match {
 //      case (Just(x), Just(f)) => Just(f(x))
 //      case _ => None
 //    }
 
+    //  Can now  beimplemnet using flaMap and map (which means flatMap is more general than ap)    
     def ap[A, B](ma: Maybe[A], ff: Maybe[A => B]): Maybe[B] = flatMap(ff, f => map(ma, f))
     
     def map2[A, B, C](a: Maybe[A], b: Maybe[B], f: (A, B) => C): Maybe[C] = ap(b, map(a, f.curried))
