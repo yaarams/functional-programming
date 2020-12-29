@@ -1,8 +1,8 @@
-package functional.part2
+package functional.part3
 
 import functional.part1.maybePart4._
 import functional.part1.pList._
-import functional.part2.listFold._
+import functional.part3.listFold._
 
 object maybeSequence {
   

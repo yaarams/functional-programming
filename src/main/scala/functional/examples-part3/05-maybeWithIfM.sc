@@ -1,6 +1,6 @@
 // scala builtin Either type
 import functional.part1.maybePart4._
-import functional.part2.maybeIfM._
+import functional.part3.maybeIfM._
 
 type UserId = Int
 case class User(id: UserId, name: String, age: Int)

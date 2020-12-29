@@ -1,6 +1,6 @@
 // scala builtin Either type
 import functional.part1.maybePart4._
-import functional.part2.maybeIfM._
+import functional.part3.maybeIfM._
 
 type UserId = Int
 case class User(id: UserId, name: String, age: Int)
@@ -27,7 +27,7 @@ def getMovieByName(name: String): Maybe[Movie] = name.toLowerCase match {
 }
 
 
-import functional.part2.maybeWithFilter._ // import extension to maybe (adds ability to use if as filter in for-yield )
+import functional.part3.maybeWithFilter._ // import extension to maybe (adds ability to use if as filter in for-yield )
 
 // This is very close to the syntactic sugar version
 def rentMovie(userName: String, movieName: String): Maybe[(UserId, MovieId)] =
