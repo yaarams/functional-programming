@@ -7,8 +7,8 @@ object random {
   // Simple pseudo-random number generation
   // Implementation taken from the the Functional Programming in Scala Book
   def rnd(seed: Seed): (Int, Seed) = {
-    val nextSeed = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1)
-    ((nextSeed >>> 16).asInstanceOf[Int], nextSeed)
+    val nextSeed = (seed * 0x5DEECE66DL + 0xBL) & 0xFFFFFFFFFFFFL
+    ((nextSeed >>> 16).toInt, nextSeed)
   }
   
   case class Rand[A](run: (Seed) => (A, Seed)) {
@@ -23,11 +23,6 @@ object random {
 
     def pure[A](v: A): Rand[A] = Rand((seed) => (v, seed))
 
-    // simple, just apply the function to all values of the list
-    def map[A, B](ma: Rand[A], f: A => B): Rand[B] = Rand((seed) => {
-      val (result, nextSeed) = ma.run(seed)
-      (f(result), nextSeed)
-    })
 
     // In a stateful computation we first pass the current state to the first computation
     // and then use the state returned from the first computation as the state we pass
@@ -39,6 +34,13 @@ object random {
       mb.run(seed1)
     })
 
+
+    // --------------- //
+    // Derived Methods //
+    // --------------- //
+
+    def map[A, B](ma: Rand[A], f: A => B): Rand[B] = flatMap(ma, a => pure(f(a)))
+    
     // all possible values cross product with all possible operations  
     def ap[A, B](ma: Rand[A], ff: Rand[A => B]): Rand[B] = {
       for (

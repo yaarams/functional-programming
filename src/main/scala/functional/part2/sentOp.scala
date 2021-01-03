@@ -5,7 +5,7 @@ object sentOp {
   type TokenIndex = Int
   case class Edge(from: TokenIndex, to: TokenIndex, label: String)
   case class Sentence(tokens: List[String], edges: List[Edge])
-  
+
   case class SentOp[A](run: (Sentence) => List[A]){
     // we need as methods for the for-yield construct to work
     def map[B](f: A => B): SentOp[B] = SentOp.map(this, f)
