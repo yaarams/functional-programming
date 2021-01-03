@@ -1,10 +1,11 @@
-package functional.part2
+package functional.part3
 
 object lazyEval {
 
   case class Lazy[+A](eval: () => A) {
     // we need as methods for the for-yield construct to work
     def map[B](f: A => B): Lazy[B] = LazyEval.map(this, f)
+
     def flatMap[B](f: A => Lazy[B]): Lazy[B] = LazyEval.flatMap(this, f)
   }
 
@@ -31,4 +32,5 @@ object lazyEval {
     // Another useful function that is worth knowing
     def product[A, B](a: Lazy[A], b: Lazy[B]): Lazy[(A, B)] = map2(a, b, (_, _))
   }
+
 }
