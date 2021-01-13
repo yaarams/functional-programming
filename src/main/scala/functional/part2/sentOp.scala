@@ -22,7 +22,7 @@ object sentOp {
     //  The special functions
     def pure[A](v: A): SentOp[A] = SentOp(_ => List(v))
     
-    def pureMany[A](v: List[A]): SentOp[A] = SentOp(_ => v)
+    def anyOf[A](v: List[A]): SentOp[A] = SentOp(_ => v)
 
     def map[A, B](ma: SentOp[A], f: A => B): SentOp[B] = SentOp(
       sent => ma.run(sent).map(f)

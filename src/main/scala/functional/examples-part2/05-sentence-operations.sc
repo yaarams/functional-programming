@@ -59,7 +59,7 @@ opEdge(ateIndex).run(sentence)
 
 val allOpEdges = for (
   sentence <- SentOp.sentenceInContext();
-  i <- SentOp.pureMany(sentence.tokens.indices.toList);
+  i <- SentOp.anyOf(sentence.tokens.indices.toList);
   edge <- opEdge(i)
 ) yield edge
 
