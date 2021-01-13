@@ -13,7 +13,7 @@ val sentence = Sentence(
     Edge(3, 2, "advmod"),
     Edge(11, 10, "advmod"),
     Edge(3, 5, "dobj"),
-    Edge(3, 5, "dobj"),
+    Edge(3, 8, "dobj"),
     Edge(11, 13, "dobj"),
     Edge(5, 4, "det"),
     Edge(8, 7, "det"),

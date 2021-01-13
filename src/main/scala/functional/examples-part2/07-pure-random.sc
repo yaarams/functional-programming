@@ -26,10 +26,9 @@ randomRange(5).run(seed1)
 randomRange(5).run(seed2)
 
 
-def randomChoice[A](lst: List[A]): Rand[A] =
-  for (
-    i <- randomRange(lst.length)
-  ) yield lst(i)
+def randomChoice[A](lst: List[A]): Rand[A] = {
+  randomRange(lst.length).map(i => lst(i))
+}
 
 randomChoice(List("A", "B", "C")).run(seed0)
 randomChoice(List("A", "B", "C")).run(seed1)
