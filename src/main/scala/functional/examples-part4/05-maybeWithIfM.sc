@@ -1,6 +1,6 @@
 // scala builtin Either type
 import functional.part1.maybePart4._
-import functional.part3.maybeIfM._
+import functional.part4.maybeIfM._
 
 type UserId = Int
 case class User(id: UserId, name: String, age: Int)
@@ -26,28 +26,23 @@ def getMovieByName(name: String): Maybe[Movie] = name.toLowerCase match {
   case _ => Maybe.nothing()
 }
 
-
-import functional.part3.maybeWithFilter._ // import extension to maybe (adds ability to use if as filter in for-yield )
-
-// This is very close to the syntactic sugar version
-def rentMovie(userName: String, movieName: String): Maybe[(UserId, MovieId)] =
-  getUserByName(userName).flatMap(user => getMovieByName(movieName).withFilter(m => user.age >= m.minAge).map(movie =>
-      (user.id, movie.id)
-  ))
+def rentMovie(userName: String, movieName: String): Maybe[(UserId, MovieId)] = {
+  val mUser = getUserByName(userName)
+  val mMovie = getMovieByName(movieName)
+  val ageIsFine = Maybe.map2(mUser, mMovie, (u, m) => u.age >= m.minAge)
+  ifM(ageIsFine, Maybe.map2(mUser, mMovie,(u, m) => (u.id, m.id)), Maybe.nothing())
+}
 
 rentMovie("bobby", "saw")
 rentMovie("sam", "saw")
-rentMovie("john", "baby shark")
 
-
-// the syntactic sugar with an if guard, which translates into a call to withFilter
-def rentMovie2(userName: String, movieName: String): Maybe[(UserId, MovieId)] =
-  for (
-    user <- getUserByName(userName);
-    movie <- getMovieByName(movieName) if user.age >= movie.minAge
-  ) yield (user.id, movie.id)
+// A shorter variation, this just a different style of the same thing
+def rentMovie2(userName: String, movieName: String): Maybe[(UserId, MovieId)] = {
+  val participants = Maybe.map2(getUserByName(userName), getMovieByName(movieName), (_, _))
+  val ageIsFine = participants.map{ case (u, m) => u.age >= m.minAge }
+  ifM(ageIsFine, participants.map{ case (u, m) => (u.id, m.id) }, Maybe.nothing())
+}
 
 rentMovie2("bobby", "saw")
 rentMovie2("sam", "saw")
 rentMovie2("john", "baby shark")
-

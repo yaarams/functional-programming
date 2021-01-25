@@ -1,6 +1,6 @@
 import functional.part1.pList._
 import functional.part1.maybePart4._
-import functional.part3.listFold._
+import functional.part4.listFold._
 
 def length[A](lst: PList[A]): Int =
   lst.foldLeft(0)((acc, _) => acc + 1)
