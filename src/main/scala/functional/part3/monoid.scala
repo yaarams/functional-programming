@@ -32,16 +32,16 @@ object monoid {
 
   given[A] as Monoid[A => A] {
     override def empty: A => A = identity
-    
+
     override def combine(x: A => A, y: A => A): A => A = x andThen y
   }
-  
+
   given[A: Monoid, B: Monoid] as Monoid[(A, B)] {
     override def empty: (A, B) = (Monoid[A].empty, Monoid[B].empty)
 
     override def combine(x: (A, B), y: (A, B)): (A, B) = (Monoid[A].combine(x._1, y._1), Monoid[B].combine(x._2, y._2))
   }
-  
+
   given[K, V: Monoid] as Monoid[Map[K, V]] {
     override def empty: Map[K, V] = Map.empty
 
@@ -60,9 +60,9 @@ object monoid {
     def |+|(y: A): A = Monoid[A].combine(x, y)
   }
 
-  // Add combineAll to lists if elements form a monoid
+  // Add  to lists if elements form a monoid
   extension[A: Monoid](lst: List[A]) {
     def combineAll = lst.foldRight(Monoid[A].empty)(Monoid[A].combine)
   }
-  
+
 }

@@ -1,4 +1,5 @@
-import functional.part3.monoid._
+import functional.part3.semiGroup._
+import functional.part3.monoidHirarchical._
 
 3 |+| 5
 
@@ -24,7 +25,6 @@ val m2 = Map(
 )
 
 m1 |+| m2
-
 
 val listOfLists = List(
   List(1, 4, 2),
