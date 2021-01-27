@@ -19,5 +19,17 @@ object compare {
       x.view.zip(y).map{case (xc, yc) => xc - yc}.find(_ != 0).getOrElse(0)
     }
   }
+
+  // we can implemnet a builder of more complicated constructs using simpler constructs  
+  def tupleOrdering[A, B](firstOrdering: Comp[A], secondOrdering: Comp[B]): Comp[(A, B)] = new Comp[(A, B)] {
+   override def compare(x: (A, B), y: (A, B)): Int = {
+     val cmp1 = firstOrdering.compare(x._1, y._1)
+     if(cmp1 == 0) {
+       secondOrdering.compare(x._2, y._2)
+     } else {
+       cmp1
+     }
+   }
+ }
   
 }

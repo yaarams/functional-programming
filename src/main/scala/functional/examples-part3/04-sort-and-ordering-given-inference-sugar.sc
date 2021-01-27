@@ -8,7 +8,7 @@ def bubbleSort[A: Comp](lst: List[A]): List[A] = {
 
   for (i <- 1 until sortedBuffer.length) {
     for (j <- 0 until i) {
-      // Comp[A] we use the buillder we added instead of summon[Comp[A]]
+      // Comp[A] we use the builder we added instead of summon[Comp[A]]
       if (Comp[A].compare(sortedBuffer(i), sortedBuffer(j)) < 0) {
         val tmp = sortedBuffer(j)
         sortedBuffer(j) = sortedBuffer(i)

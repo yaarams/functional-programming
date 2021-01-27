@@ -22,3 +22,9 @@ val lst2 = List("ba", "ab", "aa", "bb", "c")
 
 bubbleSort(lst1, intOrdering)
 bubbleSort(lst2, stringOrdering)
+
+val lst3 = List(("ab", 7), ("aa", 4), ("aa", 3))
+val lst4 = List((1, 2), (3, 4), (1, 1))
+
+bubbleSort(lst3, tupleOrdering(stringOrdering, intOrdering))
+bubbleSort(lst4, tupleOrdering(intOrdering, intOrdering))
