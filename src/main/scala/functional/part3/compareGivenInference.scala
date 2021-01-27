@@ -11,13 +11,9 @@ object compareGivenInference {
   }
 
 
-  // commonly used builder for summons to make syntax a little nicer   
-  object Comp {
-    inline def apply[A:Comp]: Comp[A] = summon[Comp[A]]
-  }
 
   //val intOrdering = new Comp[Int] {
-  given intCmp as Comp[Int] {
+  given Comp[Int] {
     override def compare(x: Int, y: Int): Int = x - y
   }
 
