@@ -1,8 +1,6 @@
 package functional.part3
 
 import functional.part3.functor._
-import sun.applet.AppletClassLoader
-
 import scala.collection.mutable.ArrayBuffer
 
 object applicative {
