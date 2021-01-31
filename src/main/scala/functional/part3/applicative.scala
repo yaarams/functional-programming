@@ -5,7 +5,7 @@ import scala.collection.mutable.ArrayBuffer
 
 object applicative {
 
-  trait Applicative[F[_]] {
+  trait Applicative[F[_]] extends Functor[F] {
     
     def pure[A](a: A): F[A]
 
@@ -15,7 +15,7 @@ object applicative {
     // Implement the Functor //
     // --------------------- //
     
-    def map[A, B](fa: F[A], f: A => B): F[B] = ap(fa, pure(f))
+    override def map[A, B](fa: F[A], f: A => B): F[B] = ap(fa, pure(f))
 
     // ---------------- //
     // Derived Function //
@@ -31,7 +31,7 @@ object applicative {
 
     def product[A, B](a: F[A], b: F[B]): F[(A, B)] = map2(a, b, (_, _))
   
-    // In the future we will see another abstraction making this method work with other thengs, not just List  
+    // In the future we will see another abstraction making this method work with other things, not just List  
     def sequence[A](lst: List[F[A]]): F[List[A]] = lst match {
       case Nil => pure(Nil)
       case fh :: ft => ap(sequence(ft), map(fh, h => h :: _))
@@ -67,11 +67,6 @@ object applicative {
     def compose(GF: Applicative[G]): Applicative[[X] =>> F[G[X]]] = Applicative.compose(FF, GF)
   }
 
-  // This defintion should be in functor implementation but we placed it here because of the order of teaching
-  given[F[_]: Applicative] as Functor[F]  {
-    override def map[A, B](fa: F[A], f: A => B): F[B] = Applicative[F].map(fa, f)
-  }
-  
   // ----------------------------- //
   // Applicative Functor instances //
   // ----------------------------- //
@@ -102,18 +97,5 @@ object applicative {
   }
 
   // Map is not an applicative functor because we can't implement pure for it  
-
-  
-  given Applicative[[X] =>> (X, X)] {
-    override def pure[A](a: A): (A, A) = (a, a)
-
-    override def ap[A, B](fa: (A, A), ff: (A => B, A => B)): (B, B) = (ff._1(fa._1), ff._2(fa._2))
-  }
-
-  given Applicative[[X] =>> (X, X, X)] {
-    override def pure[A](a: A): (A, A, A) = (a, a, a)
-
-    override def ap[A, B](fa: (A, A, A), ff: (A => B, A => B, A => B)): (B, B, B) = (ff._1(fa._1), ff._2(fa._2), ff._3(fa._3))
-  }
 
 }
