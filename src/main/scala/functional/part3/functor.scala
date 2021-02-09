@@ -14,6 +14,7 @@ object functor {
   }
 
   object Functor {
+    // a sligntly nicer syntax for summon
     def apply[F[_]: Functor]: Functor[F] = summon[Functor[F]]
   }
 
