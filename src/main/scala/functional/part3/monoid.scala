@@ -9,7 +9,7 @@ object monoid {
   }
 
   object Monoid {
-    inline def apply[A: Monoid]: Monoid[A] = summon[Monoid[A]]
+    def apply[A: Monoid]: Monoid[A] = summon[Monoid[A]]
   }
 
   given Monoid[Int] with {

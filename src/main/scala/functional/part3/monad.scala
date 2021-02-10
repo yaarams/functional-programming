@@ -6,7 +6,7 @@ object monad {
 
   trait Monad[M[_]] extends Applicative[M] {
     
-    def pure[A](a: A): M[A]
+//    def pure[A](a: A): M[A]
 
     def flatMap[A, B](ma: M[A], f: A => M[B]): M[B]
 
@@ -17,6 +17,11 @@ object monad {
     override def ap[A, B](fa: M[A], ff: M[A => B]): M[B] =
       flatMap(fa, a => map(ff, f => f(a)))
 
+    // we redifine map in terms of flatMap and pure or we will have an endless rcursion
+    // ap defined with map -> map of applicative difined in terms of ap
+    override def map[A, B](fa: M[A], f: A => B) =
+      flatMap(fa, a => pure(f(a)))
+      
   }
 
   object Monad {
@@ -26,7 +31,10 @@ object monad {
  
   // Monad useful methods and operators
   extension[M[_]: Monad, A, B](ma: M[A]) {
-    def faltMap(f: A => M[B]): M[B] = Monad[M].flatMap(ma, f)
+
+    def map(f: A => B): M[B] = Monad[M].map(ma, f)
+    
+    def flatMap(f: A => M[B]): M[B] = Monad[M].flatMap(ma, f)
     
     def <<(mb: M[B]): M[A] = Monad[M].flatMap(ma, a => Monad[M].map(mb, _ => a))
     
