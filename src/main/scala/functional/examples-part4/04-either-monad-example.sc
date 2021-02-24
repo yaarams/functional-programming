@@ -4,7 +4,7 @@ import functional.part4.eitherMonad._
 
 // doing it here because the current dotty version has some issues with the given imports
 // TODO: upgrade the compiler to a newer version
-given[E, A] as Monad[[X] =>> Either[E, X]] {
+given[E] as Monad[[X] =>> Either[E, X]] {
   override def pure[A](a: A): Either[E, A] = Right(a)
   override def flatMap[A, B](ma: Either[E, A], f: A => Either[E, B]): Either[E, B] = ma.flatMap(f)
 }

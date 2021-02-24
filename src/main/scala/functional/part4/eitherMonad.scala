@@ -4,7 +4,7 @@ import functional.part3.monad.Monad
 
 object eitherMonad {
   
-  given[E, A] as Monad[[X] =>> Either[E, X]] {
+  given[E] as Monad[[X] =>> Either[E, X]] {
 
     override def pure[A](a: A): Either[E, A] = Right(a)
     
