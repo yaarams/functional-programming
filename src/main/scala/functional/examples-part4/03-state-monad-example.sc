@@ -2,8 +2,6 @@ import functional.part3.monad._
 import functional.part3.applicative._
 import functional.part4.stateMonad._
 
-import scala.collection.mutable
-
 // Reverse Polish Notation helper functions
 
 type WithIntStack[A] = State[List[Int], A]
@@ -69,9 +67,11 @@ def reversePolishInstructions(instructions: List[PolishOp]): WithIntStack[Int] =
 }
 
 
-val polishComputation = reversePolishInstructions(List(Value(1), Value(2), ADD, Value(9), SUB))
+val polishComputation = reversePolishInstructions(
+  List(Value(1), Value(2), ADD, Value(9), SUB)
+)
 
-polishComputation.run(List.empty) // run it with an initial empty stack
+polishComputation.run(List.empty)._2 // run it with an initial empty stack, and get the result at the end
 
 // different appraoach
 // use the operations directly!

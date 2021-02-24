@@ -20,7 +20,7 @@ def pow2WithLog(a: Double): Logger[Double] = for (
 
 pow2WithLog(4)
 
-// instead of keepting track of logs lets keep track of number of runs
+// instead of keepting track of logs lets keep track of number of executions
 type ExecCounter[A] = Writer[Map[String, Int], A]
 def count1(key: String): ExecCounter[Unit] = Writer.tell(Map(key -> 1))
 
