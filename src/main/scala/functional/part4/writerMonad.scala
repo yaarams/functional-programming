@@ -1,7 +1,7 @@
-package functional.part3
+package functional.part4
 
-import functional.part3.monad._
-import functional.part3.monoid._
+import functional.part3.monad.Monad
+import functional.part3.monoid.Monoid
 
 object writerMonad {
 

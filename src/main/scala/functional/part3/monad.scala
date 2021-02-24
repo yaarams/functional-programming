@@ -15,7 +15,7 @@ object monad {
     // ------------------------- //
 
     override def ap[A, B](fa: M[A], ff: M[A => B]): M[B] =
-      flatMap(fa, a => map(ff, f => f(a)))
+      flatMap(ff, f => map(fa, a => f(a)))
 
     // we redifine map in terms of flatMap and pure or we will have an endless rcursion
     // ap defined with map -> map of applicative difined in terms of ap

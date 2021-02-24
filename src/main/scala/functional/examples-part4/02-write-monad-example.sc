@@ -1,6 +1,8 @@
 import functional.part3.monad._
 import functional.part3.monoid._
-import functional.part3.writerMonad._
+import functional.part4.writerMonad._
+
+import scala.collection.mutable
 
 type Logger[A] = Writer[List[String], A]
 def log(s: String): Logger[Unit] = Writer.tell(List(s))
@@ -35,4 +37,3 @@ def fibonacci(n: Int): ExecCounter[Int] = {
 }
 
 fibonacci(4)
-
