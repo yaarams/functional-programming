@@ -132,7 +132,6 @@ const unescapedToken = P.regex(/[^\s[\]<>:$?][a-zA-Z-0-9|&]*/);
 
 // a single token (not an anchor and not a capture)
 const token = P.alternatives(escapedValue, numberToken, unescapedToken).map<Token>((word) => ({ word, type: "token" }));
-
 // single anchor token
 const anchor = P.sequence(
   P.str("$"),
@@ -158,10 +157,18 @@ const capture = P.sequence(
   }),
 );
 
-const searchTerm = P.alternatives<SearchTerm>(capture, anchor, token).desc("search term");
+// we're willing to accept standalone symbols of :, $ and ? without the special escape syntax with backticks
+// we ensure they are standalone by saying they must be followed by either space or end of input
+const specialSingleSymbolToken = P.alternatives(
+  P.str(":"), P.str("$"), P.str("?"),
+).skip(whitespace.or(P.EOF)).map<Token>((word) => ({ word, type: "token" }));
+
+const searchTerm = P.alternatives<SearchTerm>(capture, anchor, token, specialSingleSymbolToken).desc("search term");
 
 // the full parser for the structured query language
-const spikeQuery = searchTerm.zeroOrMoreTimes({ delimiterParser: whitespace }).map((terms) => ({ terms }));
+// the optional whitespace delimiter is intentional and it helps in separation of it's into it and 's
+// (all the search terms are defined in a way where this works)
+const spikeQuery = searchTerm.zeroOrMoreTimes({ delimiterParser: whitespace.optional() }).map((terms) => ({ terms }));
 
 export function parseStructuralQuery(queryString: string): ParsingResult<SpikeQuery> {
   return spikeQuery.parse(queryString);

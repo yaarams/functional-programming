@@ -225,17 +225,17 @@ export abstract class Parser<A> {
 
   public oneOrMoreTimes(opts?: {delimiter?: string; delimiterParser?: Parser<unknown>}): Parser<Array<A>> {
     if (opts !== undefined && (opts.delimiter !== undefined || opts.delimiterParser !== undefined)) {
-      let followedByDelim: Parser<A>;
+      let preceededByDelim: Parser<A>;
       if (opts.delimiter !== undefined) {
-        followedByDelim = this.skip(Parser.str(opts.delimiter));
+        preceededByDelim = Parser.str(opts.delimiter).then(this);
       } else if (opts.delimiterParser !== undefined) {
-        followedByDelim = this.skip(opts.delimiterParser);
+        preceededByDelim = opts.delimiterParser.then(this);
       } else {
         throw new Error("Should never reach here");
       }
 
       // a prefix of zero or more items with a delim and an additional end item
-      return followedByDelim.times(0, Number.MAX_SAFE_INTEGER).bind((as) => this.map((t) => [...as, t]));
+      return this.bind((h) => preceededByDelim.times(0, Number.MAX_SAFE_INTEGER).map((t) => [h, ...t]));
     }
 
     return this.times(1, Number.MAX_SAFE_INTEGER);

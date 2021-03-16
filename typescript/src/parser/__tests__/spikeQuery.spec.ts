@@ -24,6 +24,76 @@ describe("parseStructuralQuery", () => {
     })
   });
 
+  test("only tokens with unescaped special symbols", () => {
+    const query = "abc ? and $ def"
+    expect(parseStructuralQuery(query)).toEqual({
+      type: "success",
+      result: {
+        terms: [
+          { 
+            type: "token",
+            word: "abc"
+          },
+          { 
+            type: "token",
+            word: "?"
+          },
+          { 
+            type: "token",
+            word: "and"
+          },
+          { 
+            type: "token",
+            word: "$"
+          },
+          { 
+            type: "token",
+            word: "def"
+          }
+        ]
+      }
+    })
+  });
+
+  test("only tokens with word being split into multiple tokens", () => {
+    const query = "it's ? and $ don't"
+    expect(parseStructuralQuery(query)).toEqual({
+      type: "success",
+      result: {
+        terms: [
+          { 
+            type: "token",
+            word: "it"
+          },
+          { 
+            type: "token",
+            word: "'s"
+          },
+          { 
+            type: "token",
+            word: "?"
+          },
+          { 
+            type: "token",
+            word: "and"
+          },
+          { 
+            type: "token",
+            word: "$"
+          },
+          { 
+            type: "token",
+            word: "don"
+          },
+          { 
+            type: "token",
+            word: "'t"
+          }
+        ]
+      }
+    })
+  });
+
   test("single anchor no constraints", () => {
     const query = "abc $and def"
     expect(parseStructuralQuery(query)).toEqual({
@@ -279,7 +349,7 @@ test("complex capture", () => {
     })
   });
 
-  test.only("failure", () => {
+  test("failure", () => {
     const query = "abc U2>cap_1:[w&e=PERSON|{my_list}|`some long value`]and def"
     const p = parseStructuralQuery(query)
     expect(p.type == "failure" && p.offset === 6).toBeTrue
