@@ -13,10 +13,8 @@ object monadicParserCombinator {
     
    def withoutPrefixOf(size: Int) = 
      ParserState(input.substring(size), offset + size)
-     
   }
 
-  
   case class Parser[A](
     parsePartial: (ParserState) => Either[ParserError, (ParserState, A)] 
   )
@@ -38,9 +36,9 @@ object monadicParserCombinator {
   } 
   
   object Parser {
-    
+
     def str(expected: String): Parser[String] = Parser {
-      state => 
+      state =>
         if (state.input.startsWith(expected)) {
           Right(
             state.withoutPrefixOf(expected.length),
@@ -48,7 +46,7 @@ object monadicParserCombinator {
           )
         } else {
           Left(ParserError(
-            f"Expected '$expected' at ${state.offset} but got '${state.input.substring(expected.length)}'", 
+            f"Expected '$expected' at ${state.offset} but got '${state.input.substring(expected.length)}'",
             state.offset)
           )
         }
@@ -57,11 +55,11 @@ object monadicParserCombinator {
     def regex(expectedRegex: Regex): Parser[String] = Parser {
       state =>
         expectedRegex.findPrefixOf(state.input) match {
-          case Some(m) =>  
-              Right((
-                state.withoutPrefixOf(m.length),
-                m.toString
-              ))
+          case Some(m) =>
+            Right((
+              state.withoutPrefixOf(m.length),
+              m.toString
+            ))
           case None =>
             Left(ParserError(
               f"Expected '/${expectedRegex.pattern}/' at ${state.offset} but got '${state.input.substring(10)}...'",
@@ -69,5 +67,5 @@ object monadicParserCombinator {
             )
         }
     }
-  
+  } 
 }
