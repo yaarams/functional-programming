@@ -1,7 +1,7 @@
 package functional.part3
 
-import functional.part3.empty._
-import functional.part3.semiGroup._
+import functional.part3.empty.*
+import functional.part3.semiGroup.*
 
 object monoidHirarchical {
 
@@ -14,7 +14,7 @@ object monoidHirarchical {
     inline def apply[A: Monoid]: Monoid[A] = summon[Monoid[A]]
   }
  
-  given[A: SemiGroup: Empty] as Monoid[A] {
+  given [A: SemiGroup: Empty]: Monoid[A] with {
     override def empty: A = Empty[A].empty
     override def combine(x: A, y: A): A = SemiGroup[A].combine(x, y)
   }

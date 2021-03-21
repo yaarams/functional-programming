@@ -13,44 +13,44 @@ object monoidDisambiguationByNaming {
   }
 
   // lets give this definition the name sum
-  given sumInt as Monoid[Int] with {
+  given sumInt: Monoid[Int] with {
     def empty = 0
 
     def combine(x: Int, y: Int) = x + y
   }
   
   // lets give this definition the name product
-  given productInt as Monoid[Int] with {
+  given productInt: Monoid[Int] with {
     def empty = 1
 
     def combine(x: Int, y: Int) = x * y
   }
   
-  given stringMonoid as Monoid[String] {
+  given stringMonoid: Monoid[String] with {
     def empty = ""
 
-    override def combine(x: String, y: String): String = x.concat(y)
+    def combine(x: String, y: String): String = x.concat(y)
   }
 
-  given listMonoid[A] as Monoid[List[A]] {
+  given listMonoid[A]: Monoid[List[A]] with {
     def empty = List.empty
 
     override def combine(x: List[A], y: List[A]): List[A] = x.concat(y)
   }
 
-  given funcMonoid[A] as Monoid[A => A] {
+  given funcMonoid[A]: Monoid[A => A] with{
     override def empty: A => A = identity
     
     override def combine(x: A => A, y: A => A): A => A = x andThen y
   }
   
-  given tupleMonoid[A: Monoid, B: Monoid] as Monoid[(A, B)] {
+  given tupleMonoid[A: Monoid, B: Monoid]: Monoid[(A, B)] with {
     override def empty: (A, B) = (Monoid[A].empty, Monoid[B].empty)
 
     override def combine(x: (A, B), y: (A, B)): (A, B) = (Monoid[A].combine(x._1, y._1), Monoid[B].combine(x._2, y._2))
   }
   
-  given mapMonoid[K, V: Monoid] as Monoid[Map[K, V]] {
+  given mapMonoid[K, V: Monoid]: Monoid[Map[K, V]] with {
     override def empty: Map[K, V] = Map.empty
 
     override def combine(x: Map[K, V], y: Map[K, V]): Map[K, V] = {

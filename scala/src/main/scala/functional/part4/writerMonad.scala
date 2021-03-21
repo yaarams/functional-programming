@@ -7,7 +7,7 @@ object writerMonad {
 
   case class Writer[W, +A](written: W, value: A)
 
-  given[W: Monoid] as Monad[[A] =>> Writer[W, A]] {
+  given [W: Monoid]: Monad[[A] =>> Writer[W, A]] with {
 
     override def pure[A](a: A): Writer[W, A] = Writer(Monoid[W].empty, a)
 

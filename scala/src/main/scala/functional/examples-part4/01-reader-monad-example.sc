@@ -1,5 +1,5 @@
-import functional.part3.monad._
-import functional.part4.readerMonad._
+import functional.part3.monad.*
+import functional.part4.readerMonad.*
 
 case class User(
   id: Int,

@@ -1,5 +1,5 @@
 // scala builtin Either type
-import functional.part4.listZippers._
+import functional.part4.listZippers.*
 
 
 val lst = List(1,2,3,4,5,6)

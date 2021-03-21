@@ -1,4 +1,4 @@
-import functional.part3.monoidDisambiguationByNaming.{productInt, sumInt, tupleMonoid, stringMonoid, mapMonoid, listMonoid, _}
+import functional.part3.monoidDisambiguationByNaming.{productInt, sumInt, tupleMonoid, stringMonoid, mapMonoid, listMonoid, *}
 
 (3 |+| 5)(sumInt) // explicitly pass the monoid definition for sum
 (3 |+| 5)(productInt) // explicitly pass the monoid definition for product

@@ -1,4 +1,4 @@
-import functional.part3.compareGivenInferenceSyntacticSugar._
+import functional.part3.compareGivenInferenceSyntacticSugar.*
 
 
 // def bubbleSort[A](lst: List[A], cmp: Comp[A]): List[A] = {

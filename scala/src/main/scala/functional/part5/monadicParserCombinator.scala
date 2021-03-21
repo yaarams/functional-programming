@@ -19,7 +19,7 @@ object monadicParserCombinator {
     parsePartial: (ParserState) => Either[ParserError, (ParserState, A)] 
   )
  
-  given Monad[Parser] {
+  given Monad[Parser] with {
 
     override def pure[A](a: A): Parser[A] = Parser((state) => Right((state, a)))
     
@@ -34,6 +34,10 @@ object monadicParserCombinator {
         }
     }
   } 
+ 
+  // --------------------------------- // 
+  // Basic concrete parsers definition //
+  // --------------------------------- // 
   
   object Parser {
 
@@ -65,6 +69,18 @@ object monadicParserCombinator {
               f"Expected '/${expectedRegex.pattern}/' at ${state.offset} but got '${state.input.substring(10)}...'",
               state.offset)
             )
+        }
+    }
+    
+    val EOF: Parser[Unit] = Parser {
+      state =>
+        if (state.input.isEmpty) {
+          Right((state, ())) 
+        } else {
+          Left(ParserError(
+            f"Expected 'EOF' at ${state.offset} but got '${state.input.substring(10)}...'",
+            state.offset)
+          )
         }
     }
   } 

@@ -32,10 +32,10 @@ object binaryDecoderApplicative {
     }
   }
 
-  given Applicative[BinaryDecoder] {
+  given Applicative[BinaryDecoder] with {
 
     // a pure value that has nothing to do with the encoding so we don't decode anything from the array
-    override def pure[A](a: A): BinaryDecoder[A] = BinaryDecoder(
+    def pure[A](a: A): BinaryDecoder[A] = BinaryDecoder(
       (arr, index) => Some((index, a)),
     )
 

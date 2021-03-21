@@ -1,5 +1,5 @@
 // scala builtin Either type
-import functional.part1.maybePart4._
+import functional.part1.maybePart4.*
 
 type UserId = Int
 case class User(id: UserId, name: String, age: Int)
@@ -49,7 +49,7 @@ def rentMovie2(userName: String, movieName: String): Maybe[(UserId, MovieId)] =
     if (user.age >= movie.minAge) {
       (user.id, movie.id)
     } else {
-      ??? // We can't really do that, this part will beinside a map without the syntactic sugar
+      ??? // We can't really do that, this part will be inside a map without the syntactic sugar
     }
   ))
 

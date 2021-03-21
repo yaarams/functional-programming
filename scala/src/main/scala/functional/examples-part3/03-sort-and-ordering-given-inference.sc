@@ -1,4 +1,4 @@
-import functional.part3.compareGivenInference._
+import functional.part3.compareGivenInference.*
 
 
 // def bubbleSort[A](lst: List[A], cmp: Comp[A]): List[A] = {

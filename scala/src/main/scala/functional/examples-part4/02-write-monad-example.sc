@@ -1,6 +1,6 @@
-import functional.part3.monad._
-import functional.part3.monoid._
-import functional.part4.writerMonad._
+import functional.part3.monad.*
+import functional.part3.monoid.*
+import functional.part4.writerMonad.*
 
 import scala.collection.mutable
 

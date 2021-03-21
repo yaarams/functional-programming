@@ -10,28 +10,28 @@ object empty {
     inline def apply[A: Empty]: Empty[A] = summon[Empty[A]]
   }
   
-  given Empty[Int] {
-    override def empty: Int = 0
+  given Empty[Int] with {
+    def empty: Int = 0
   }
 
-  given Empty[String] {
-    override def empty: String = ""
+  given Empty[String] with {
+    def empty: String = ""
   }
 
-  given[A] as Empty[List[A]] {
+  given [A]:Empty[List[A]] with{
     def empty = List.empty
   }
 
-  given[A] as Empty[A => A] {
-    override def empty: A => A = identity
+  given [A]:Empty[A => A] with {
+    def empty: A => A = identity
   }
 
   // We can define it for any map, not just maps where values have some constraint
-  given[K, V] as Empty[Map[K, V]] {
+  given [K, V]:Empty[Map[K, V]] with {
     override def empty: Map[K, V] = Map.empty
   }
   
-  given[A: Empty, B: Empty] as Empty[(A, B)] {
+  given [A: Empty, B: Empty]:Empty[(A, B)] with {
     override def empty: (A, B) = (Empty[A].empty, Empty[B].empty)
   }
 

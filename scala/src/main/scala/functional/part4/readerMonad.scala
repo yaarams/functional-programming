@@ -7,7 +7,7 @@ object readerMonad {
   // it's just a functions no need for some wrapper
   case class Reader[C, A](run: C => A)
   
-  given[C] as Monad[[X] =>> Reader[C, X]] {
+  given [C]: Monad[[X] =>> Reader[C, X]] with {
 
     override def pure[A](a: A): Reader[C, A] = Reader(_ => a)
 

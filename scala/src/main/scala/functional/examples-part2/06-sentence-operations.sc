@@ -1,5 +1,5 @@
 // scala builtin Either type
-import functional.part2.sentOp._
+import functional.part2.sentOp.*
 
 val sentence = Sentence(
   tokens = List("Marry", "and", "Sally", "ate", "an", "organe", "and", "a", "bannana", "while", "Betty", "jumped", "the", "rope"),

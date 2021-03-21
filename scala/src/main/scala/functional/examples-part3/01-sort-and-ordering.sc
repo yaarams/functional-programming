@@ -1,4 +1,4 @@
-import functional.part3.compare._
+import functional.part3.compare.*
 
 def bubbleSort[A](lst: List[A], cmp: Comp[A]): List[A] = {
   // lets use local mutation

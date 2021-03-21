@@ -1,4 +1,4 @@
-import functional.part1.shape1._
+import functional.part1.shape1.*
 
 // accessing the values in a union through pattern matching (the match keyword)
 def area(shape: Shape): Double = shape match {

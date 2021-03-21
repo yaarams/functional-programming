@@ -1,4 +1,4 @@
-import functional.part1.intList._
+import functional.part1.intList.*
 
 val lst0 = IntCons(2, IntNil)
 val lst1 = IntCons(1, lst0)

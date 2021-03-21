@@ -5,3 +5,7 @@ target
 .dotty-ide.json
 project/target
 project/project
+scala/project/target
+scala/project/project
+scala/.idea
+scala/.bsp

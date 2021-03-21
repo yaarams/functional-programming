@@ -1,4 +1,4 @@
-import functional.part3.applicative._
+import functional.part3.applicative.*
 
 val F = Applicative[List] compose Applicative[Option]
 

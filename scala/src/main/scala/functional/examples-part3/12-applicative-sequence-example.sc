@@ -1,4 +1,4 @@
-import functional.part3.applicative._
+import functional.part3.applicative.*
 
 val lst1: List[Option[Int]] = List(Some(1), Some(2), Some(5))
 

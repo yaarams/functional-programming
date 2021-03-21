@@ -18,34 +18,34 @@ object monoid {
     def combine(x: Int, y: Int) = x + y
   }
 
-  given Monoid[String] {
+  given Monoid[String] with {
     def empty = ""
 
-    override def combine(x: String, y: String): String = x.concat(y)
+    def combine(x: String, y: String): String = x.concat(y)
   }
 
-  given[A] as Monoid[List[A]] {
+  given [A]:Monoid[List[A]] with {
     def empty = List.empty
 
-    override def combine(x: List[A], y: List[A]): List[A] = x.concat(y)
+    def combine(x: List[A], y: List[A]): List[A] = x.concat(y)
   }
 
-  given[A] as Monoid[A => A] {
-    override def empty: A => A = identity
+  given [A]:Monoid[A => A] with {
+    def empty: A => A = identity
 
-    override def combine(x: A => A, y: A => A): A => A = x andThen y
+    def combine(x: A => A, y: A => A): A => A = x andThen y
   }
 
-  given[A: Monoid, B: Monoid] as Monoid[(A, B)] {
-    override def empty: (A, B) = (Monoid[A].empty, Monoid[B].empty)
+  given [A: Monoid, B: Monoid]:Monoid[(A, B)] with {
+    def empty: (A, B) = (Monoid[A].empty, Monoid[B].empty)
 
-    override def combine(x: (A, B), y: (A, B)): (A, B) = (Monoid[A].combine(x._1, y._1), Monoid[B].combine(x._2, y._2))
+    def combine(x: (A, B), y: (A, B)): (A, B) = (Monoid[A].combine(x._1, y._1), Monoid[B].combine(x._2, y._2))
   }
 
-  given[K, V: Monoid] as Monoid[Map[K, V]] {
-    override def empty: Map[K, V] = Map.empty
+  given [K, V: Monoid]:Monoid[Map[K, V]] with {
+    def empty: Map[K, V] = Map.empty
 
-    override def combine(x: Map[K, V], y: Map[K, V]): Map[K, V] = {
+    def combine(x: Map[K, V], y: Map[K, V]): Map[K, V] = {
       val combinedMap = x.toList.concat(y.toList).groupMap { case (k, _) => k }(_._2)
       combinedMap.view.mapValues {
         case List(a) => a

@@ -1,23 +1,11 @@
-import functional.part3.applicative._
-import functional.part3.monad._
-import functional.part4.eitherMonad._
+import functional.part3.applicative.*
+import functional.part3.monad.*
+import functional.part3.monad.given
+import functional.part4.eitherMonad.*
 
-// doing it here because the current dotty version has some issues with the given imports
-// TODO: upgrade the compiler to a newer version
-given[E] as Monad[[X] =>> Either[E, X]] {
-  override def pure[A](a: A): Either[E, A] = Right(a)
-  override def flatMap[A, B](ma: Either[E, A], f: A => Either[E, B]): Either[E, B] = ma.flatMap(f)
-}
-
-
-// Arithmetic with reasons why it failed
-
-case class ArithmeticError(msg: String)
-
-type Arithmetic[A] =  Either[ArithmeticError, A]
-def fail(msg: String) = Left(ArithmeticError(msg))
-def success[A](a: A) = Right(a)
-def pure[A](a: A) = Monad[Arithmetic].pure(a)
+// The definitions for Arithmetic and the other functions
+// aren't located here because of some currentl limitation of the worksheets
+// so we defined them in the eitherMonad module
 
 def safeDiv(a: Double, b: Double): Arithmetic[Double] = {
   if (b == 0) {
@@ -53,4 +41,3 @@ def squreDiv(a: Double, b: Double): Arithmetic[Double] = for {
 squreDiv(9, 3)
 squreDiv(-9, 3)
 squreDiv(9, 0)
-

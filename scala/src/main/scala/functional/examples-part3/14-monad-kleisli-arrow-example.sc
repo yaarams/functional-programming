@@ -1,5 +1,4 @@
-
-import functional.part3.monad._
+import functional.part3.monad.*
 
 def safeSqrt(x: Double): Option[Double] = {
   if (x >= 0) {

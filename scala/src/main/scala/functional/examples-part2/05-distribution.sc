@@ -1,5 +1,5 @@
 // scala builtin Either type
-import functional.part2.dist._
+import functional.part2.dist.*
 
 case class Position(x: Int, y: Int)
 

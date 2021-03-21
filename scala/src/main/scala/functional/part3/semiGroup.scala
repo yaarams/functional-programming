@@ -14,24 +14,24 @@ object semiGroup {
     def combine(x: Int, y: Int) = x + y
   }
 
-  given SemiGroup[String] {
-    override def combine(x: String, y: String): String = x.concat(y)
+  given SemiGroup[String] with {
+    def combine(x: String, y: String): String = x.concat(y)
   }
 
-  given[A] as SemiGroup[List[A]] {
-    override def combine(x: List[A], y: List[A]): List[A] = x.concat(y)
+  given [A]: SemiGroup[List[A]] with {
+    def combine(x: List[A], y: List[A]): List[A] = x.concat(y)
   }
 
-  given[A] as SemiGroup[A => A] {
-    override def combine(x: A => A, y: A => A): A => A = x andThen y
+  given [A]: SemiGroup[A => A] with {
+    def combine(x: A => A, y: A => A): A => A = x andThen y
   }
   
-  given[A: SemiGroup, B: SemiGroup] as SemiGroup[(A, B)] {
-    override def combine(x: (A, B), y: (A, B)): (A, B) = (SemiGroup[A].combine(x._1, y._1), SemiGroup[B].combine(x._2, y._2))
+  given [A: SemiGroup, B: SemiGroup]: SemiGroup[(A, B)] with {
+    def combine(x: (A, B), y: (A, B)): (A, B) = (SemiGroup[A].combine(x._1, y._1), SemiGroup[B].combine(x._2, y._2))
   }
   
-  given[K, V: SemiGroup] as SemiGroup[Map[K, V]] {
-    override def combine(x: Map[K, V], y: Map[K, V]): Map[K, V] = {
+  given [K, V: SemiGroup]: SemiGroup[Map[K, V]] with{
+    def combine(x: Map[K, V], y: Map[K, V]): Map[K, V] = {
       val combinedMap = x.toList.concat(y.toList).groupMap { case (k, _) => k }(_._2)
       combinedMap.view.mapValues {
         case List(a) => a

@@ -1,4 +1,4 @@
-import functional.part3.monoid._
+import functional.part3.monoid.*
 
 3 |+| 5
 

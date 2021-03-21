@@ -1,5 +1,5 @@
 // scala builtin Either type
-import functional.part2.random._
+import functional.part2.random.*
 
 
 val seed0 = 25214903928L

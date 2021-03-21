@@ -1,6 +1,6 @@
 package functional.part3
 
-import functional.part3.applicative._
+import functional.part3.applicative.*
 
 object monad {
 
@@ -54,17 +54,17 @@ object monad {
   // Monad instances //
   // --------------- //
 
-  given Monad[List] {
-    override def pure[A](a: A): List[A] = List(a)
+  given Monad[List] with {
+    def pure[A](a: A): List[A] = List(a)
 
-    override def flatMap[A, B](ma: List[A], f: A => List[B]): List[B] = ma.flatMap(f)
+    def flatMap[A, B](ma: List[A], f: A => List[B]): List[B] = ma.flatMap(f)
   }
 
-  given Monad[Option] {
+  given Monad[Option] with {
 
-    override def pure[A](a: A): Option[A] = Some(a)
+    def pure[A](a: A): Option[A] = Some(a)
 
-    override def flatMap[A, B](ma: Option[A], f: A => Option[B]): Option[B] = ma match {
+    def flatMap[A, B](ma: Option[A], f: A => Option[B]): Option[B] = ma match {
       case Some(x) => f(x)
       case None => None
     }

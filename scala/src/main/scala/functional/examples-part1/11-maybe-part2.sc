@@ -1,4 +1,4 @@
-import functional.part1.maybePart2._
+import functional.part1.maybePart2.*
 
 val m1 = Maybe.pure(3)
 

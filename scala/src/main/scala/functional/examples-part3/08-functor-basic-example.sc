@@ -1,5 +1,5 @@
-import functional.part3.functor._
-import functional.part3.graph._
+import functional.part3.functor.*
+import functional.part3.graph.*
 
 val lst1: List[Double] = List(1.0, 2.0, 5.0)
 val lst2: List[String] = List("A", "B", "C")

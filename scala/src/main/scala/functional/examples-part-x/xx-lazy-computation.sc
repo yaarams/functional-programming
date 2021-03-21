@@ -1,5 +1,5 @@
 // scala builtin Either type
-import functional.part2.list._
+import functional.part2.list.*
 
 val mx = List(1, 2)
 val my = List(3, 7)

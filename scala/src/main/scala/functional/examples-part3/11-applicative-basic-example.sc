@@ -1,4 +1,4 @@
-import functional.part3.applicative._
+import functional.part3.applicative.*
 
 // an example we've seen befor but now with our abstraction
 val m1 = Applicative[Option].pure(2)

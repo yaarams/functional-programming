@@ -6,7 +6,7 @@ import scala.collection.mutable.ArrayBuffer
 object applicative {
 
   trait Applicative[F[_]] extends Functor[F] {
-    
+
     def pure[A](a: A): F[A]
 
     // Implement ap and map2 in terms of each other, giving the implementer the option to implement one of them 
@@ -14,14 +14,14 @@ object applicative {
     def ap[A, B](fa: F[A], ff: F[A => B]): F[B] =
       map2(fa, ff, (a, f) => f(a))
 
-    
-    def map2[A, B, C](a: F[A], b: F[B], f: (A, B) => C): F[C] = 
+
+    def map2[A, B, C](a: F[A], b: F[B], f: (A, B) => C): F[C] =
       ap(b, map(a, f.curried))
-    
+
     // --------------------- //
     // Implement the Functor //
     // --------------------- //
-    
+
     override def map[A, B](fa: F[A], f: A => B): F[B] = ap(fa, pure(f))
 
     // ---------------- //
@@ -35,15 +35,14 @@ object applicative {
     def lift3[A, B, C, D](f: (A, B, C) => D): (F[A], F[B], F[C]) => F[D] = (fa, fb, fc) => map3(fa, fb, fc, f)
 
     def product[A, B](fa: F[A], fb: F[B]): F[(A, B)] = map2(fa, fb, (_, _))
-    
+
     def product[A, B, C](fa: F[A], fb: F[B], fc: F[C]): F[(A, B, C)] = map3(fa, fb, fc, (_, _, _))
-  
+
     // In the future we will see another abstraction making this method work with other things, not just List  
     def sequence[A](lst: List[F[A]]): F[List[A]] = lst match {
       case Nil => pure(Nil)
       case fh :: ft => ap(sequence(ft), map(fh, h => h :: _))
     }
-    
   }
 
   object Applicative {
@@ -79,8 +78,9 @@ object applicative {
   // Applicative Functor instances //
   // ----------------------------- //
 
-  given Applicative[List] {
-    override def pure[A](a: A): List[A] = List(a)
+  given Applicative[List] with {
+    
+    def pure[A](a: A): List[A] = List(a)
 
     // Implement ap and not map2
     override def ap[A, B](fa: List[A], ff: List[A => B]): List[B] = {
@@ -95,9 +95,9 @@ object applicative {
     }
   }
 
-  given Applicative[Option] {
+  given Applicative[Option] with {
     
-    override def pure[A](a: A): Option[A] = Some(a)
+    def pure[A](a: A): Option[A] = Some(a)
 
     // Implement map2 instead of ap
     override def map2[A, B, C](fa: Option[A], fb: Option[B], f: (A, B) => C): Option[C] = (fa, fb) match {

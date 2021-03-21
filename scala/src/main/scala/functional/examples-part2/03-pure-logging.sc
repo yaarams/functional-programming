@@ -1,5 +1,5 @@
 // scala builtin Either type
-import functional.part2.logging._
+import functional.part2.logging.*
 
 def pow2(a: Int): Int = a * a
 

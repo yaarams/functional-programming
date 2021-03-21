@@ -1,2 +1,2 @@
-import functional.part3.monad._
-import functional.part5.monadicParserCombinator._
+import functional.part3.monad.*
+import functional.part5.monadicParserCombinator.*

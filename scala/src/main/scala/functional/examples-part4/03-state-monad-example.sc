@@ -1,6 +1,6 @@
-import functional.part3.monad._
-import functional.part3.applicative._
-import functional.part4.stateMonad._
+import functional.part3.monad.*
+import functional.part3.applicative.*
+import functional.part4.stateMonad.*
 
 // Reverse Polish Notation helper functions
 

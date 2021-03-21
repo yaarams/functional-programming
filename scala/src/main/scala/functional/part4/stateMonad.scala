@@ -6,7 +6,7 @@ object stateMonad {
   
   case class State[S, A](run: S => (S, A))
     
-  given[S] as Monad[[X] =>> State[S, X]] {
+  given [S]: Monad[[X] =>> State[S, X]] with {
 
     override def pure[A](a: A): State[S, A] = State(s => (s, a))
     
