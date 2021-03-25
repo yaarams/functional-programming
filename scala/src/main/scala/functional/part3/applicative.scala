@@ -12,7 +12,7 @@ object applicative {
     // Implement ap and map2 in terms of each other, giving the implementer the option to implement one of them 
     // which ever he find more convinient
     def ap[A, B](fa: F[A], ff: F[A => B]): F[B] =
-      map2(fa, ff, (a, f) => f(a))
+      map2(ff, fa, (f, a) => f(a))
 
 
     def map2[A, B, C](a: F[A], b: F[B], f: (A, B) => C): F[C] =
