@@ -78,7 +78,7 @@ object parserCombinatorApplicativeWithOr {
     // derived from OR
 
     def optional(): Parser[Option[A]] =
-      Applicative[Parser].map(this, Some.apply) | Applicative[Parser].pure(None)
+      Applicative[Parser].map(this, Some(_)) | Applicative[Parser].pure(None)
 
   }
 
@@ -108,7 +108,7 @@ object parserCombinatorApplicativeWithOr {
   extension [A, B](pa: Parser[A]) {
    
     def **(pb: Parser[B]): Parser[(A, B)] = Applicative[Parser].product(pa, pb)
-    
+
   }
   
   // --------------------------------- // 
