@@ -35,11 +35,7 @@ object monad {
     def map(f: A => B): M[B] = Monad[M].map(ma, f)
     
     def flatMap(f: A => M[B]): M[B] = Monad[M].flatMap(ma, f)
-    
-    def <<(mb: M[B]): M[A] = Monad[M].flatMap(ma, a => Monad[M].map(mb, _ => a))
-    
-    def >>(mb: M[B]): M[B] = Monad[M].flatMap(ma, _ => mb)
-    
+
   }
 
   // a useful Kleisli arrow operator to compose functions that return monads

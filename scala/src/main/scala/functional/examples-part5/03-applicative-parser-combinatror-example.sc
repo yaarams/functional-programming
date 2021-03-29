@@ -13,7 +13,6 @@ abParser.run(Location("a"))
 abParser.run(Location("ab"))
 abParser.run(Location("abc"))
 
-
 // Simple computation parser
 
 val intParser = P.regex("-?\\d+".r).map(_.toInt)

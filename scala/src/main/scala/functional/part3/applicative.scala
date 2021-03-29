@@ -59,11 +59,15 @@ object applicative {
       }
 
     }
-    
+
   }
 
   extension[F[_]: Applicative, A, B](fa: F[A]) {
     def ap(f: F[A => B]): F[B] = Applicative[F].ap(fa, f)
+
+    def <<(fb: F[B]): F[A] = Applicative[F].map2(fa, fb, (a, _) => a)
+
+    def >>(fb: F[B]): F[B] = Applicative[F].map2(fa, fb, (_, b) => b)
   }
 
   extension[F[_]: Applicative, A](lst: List[F[A]]) {

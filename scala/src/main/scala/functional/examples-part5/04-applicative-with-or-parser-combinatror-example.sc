@@ -13,6 +13,13 @@ walkParser.run(Location("walked"))
 walkParser.run(Location("walks"))
 walkParser.run(Location("walkter"))
 
+// use of '>>' and '<<'
+val walkerInQuotesParser = P.str("'") >> walkParser << P.str("'")
+walkerInQuotesParser.run(Location("walk"))
+walkerInQuotesParser.run(Location("'walking'"))
+walkerInQuotesParser.run(Location("walked"))
+walkerInQuotesParser.run(Location("'walks'"))
+walkerInQuotesParser.run(Location("walkter"))
 
 // Simple computation parser
 val intParser = P.regex("-?\\d+".r).map(_.toInt)

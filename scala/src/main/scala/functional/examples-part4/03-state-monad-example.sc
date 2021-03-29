@@ -84,8 +84,6 @@ val program2 = List(push(1), push(7), add, push(9), subtract).sequence >> pop()
 program2.run(List.empty)._2 // get the returned value (_1 is the state)
 
 
-
-
 // A more complicated example
 
 type WithIndex[A] = State[Int, A]
