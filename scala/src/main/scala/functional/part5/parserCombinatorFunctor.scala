@@ -28,10 +28,14 @@ object parserCombinatorFunctor {
   case class ParserError(loc: Location, msg: String)
 
   // This is basically a specialized Either with nicer names and only a single generic param 
-  sealed trait Result[+A]
-
+  sealed trait Result[+A] {
+    // it's good to have an easy way to convert to an actual either
+    def toEither: Either[ParserError, (A, Location)] = this match {
+      case Failure(err) => Left(err)
+      case Success(v, loc) => Right((v, loc))
+    }
+  }
   case class Success[+A](get: A, location: Location) extends Result[A]
-
   case class Failure[+A](get: ParserError) extends Result[Nothing]
 
   // NOTE: We can define a Monad for result (like Either) but we wont be using so we will do with Functor 
