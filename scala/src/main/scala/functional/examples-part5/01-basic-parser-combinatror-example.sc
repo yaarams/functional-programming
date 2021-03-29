@@ -61,7 +61,7 @@ def delmitedBy(value: String, delimiter: String): Parser[List[String]] = Parser 
       subslice = subslice.substring(element.length)
     }
 
-    Success(List.fill(found)(value), loc.offset + offset)
+    Success(List.fill(found)(value), loc.advance(offset))
 }
 
 
@@ -90,7 +90,7 @@ def countDelmitedBy(value: String, delimiter: String): Parser[Int] = Parser {
       subslice = subslice.substring(element.length)
     }
 
-    Success(found, loc.offset + offset)
+    Success(found, loc.advance(offset))
 }
 
 

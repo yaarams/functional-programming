@@ -48,7 +48,7 @@ def delmitedBy(value: String, delimiter: String): Parser[List[String]] = Parser 
       subslice = subslice.substring(element.length)
     }
 
-    Success(List.fill(found)(value), loc.offset + offset)
+    Success(List.fill(found)(value), loc.advance(offset))
 }
 
 

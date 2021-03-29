@@ -11,6 +11,10 @@ object parserCombinatorFunctor {
   // the current parsing head is
   case class Location(input: String, offset: Int = 0) {
 
+    // conveniance: build a new location by advancing the current one
+    def advance(by: Int): Location = this.copy(offset = this.offset + by)
+
+    // useful getters for understanding the position in the string
     def getLine(): Int = input.slice(0, offset + 1).count(_ == '\n') + 1
 
     def getColumn(): Int = input.slice(0, offset + 1).lastIndexOf('\n') match {
@@ -19,13 +23,14 @@ object parserCombinatorFunctor {
     }
   }
 
+
   // location will indicate where the error happened and some message about what went wrong
   case class ParserError(loc: Location, msg: String)
 
   // This is basically a specialized Either with nicer names and only a single generic param 
   sealed trait Result[+A]
 
-  case class Success[+A](get: A, charsConsumed: Int) extends Result[A]
+  case class Success[+A](get: A, location: Location) extends Result[A]
 
   case class Failure[+A](get: ParserError) extends Result[Nothing]
 
@@ -74,7 +79,7 @@ object parserCombinatorFunctor {
         if (loc.input.substring(loc.offset).startsWith(expected)) {
           Success(
             expected,
-            expected.length
+            loc.advance(expected.length)
           )
         } else {
           Failure(
@@ -93,7 +98,7 @@ object parserCombinatorFunctor {
           case Some(m) =>
             Success(
               m.toString,
-              m.length
+              loc.advance(m.length)
             )
           case None =>
             Failure(

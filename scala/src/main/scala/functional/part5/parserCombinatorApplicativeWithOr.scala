@@ -13,6 +13,10 @@ object parserCombinatorApplicativeWithOr {
   // the current parsing head is
   case class Location(input: String, offset: Int = 0) {
 
+    // conveniance: build a new location by advancing the current one
+    def advance(by: Int): Location = this.copy(offset = this.offset + by)
+
+    // useful getters for understanding the position in the string
     def getLine(): Int = input.slice(0, offset + 1).count(_ == '\n') + 1
 
     def getColumn(): Int = input.slice(0, offset + 1).lastIndexOf('\n') match {
@@ -21,13 +25,14 @@ object parserCombinatorApplicativeWithOr {
     }
   }
 
+
   // location will indicate where the error happened and some message about what went wrong
   case class ParserError(loc: Location, msg: String)
 
   // This is basically a specialized Either with nicer names and only a single generic param 
   sealed trait Result[+A]
 
-  case class Success[+A](get: A, charsConsumed: Int) extends Result[A]
+  case class Success[+A](get: A, location: Location) extends Result[A]
 
   case class Failure[+A](get: ParserError) extends Result[Nothing]
 
@@ -78,19 +83,18 @@ object parserCombinatorApplicativeWithOr {
   given Applicative[Parser] with {
 
     def pure[A](a: A): Parser[A] = Parser {
-      _ => Success(a, 0) // pure values don't consume anything from the input
+      loc => Success(a, loc) // pure values don't consume anything from the input
     }
 
     override def map2[A, B, C](pa: Parser[A], pb: Parser[B], f: (A, B) => C): Parser[C] = Parser {
       loc0 =>
         pa.run(loc0) match {
           case err@Failure(_) => err
-          case Success(v1, consumed1) =>
-            val loc1 = Location(loc0.input, loc0.offset + consumed1)
+          case Success(v1, loc1) =>
             pb.run(loc1) match {
               case err@Failure(_) => err
-              case Success(v2, consumed2) =>
-                Success(f(v1, v2), consumed1 + consumed2)
+              case Success(v2, loc2) =>
+                Success(f(v1, v2), loc2)
             }
         }
     }
@@ -114,7 +118,7 @@ object parserCombinatorApplicativeWithOr {
         if (loc.input.substring(loc.offset).startsWith(expected)) {
           Success(
             expected,
-            expected.length
+            loc.advance(expected.length)
           )
         } else {
           Failure(
@@ -133,7 +137,7 @@ object parserCombinatorApplicativeWithOr {
           case Some(m) =>
             Success(
               m.toString,
-              m.length
+              loc.advance(m.length)
             )
           case None =>
             Failure(
