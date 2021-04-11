@@ -4,6 +4,7 @@ import functional.part5.parserCombinatorBasic.{Parser => P}
 // very basic use of our exiting parsers
 P.str("aba").run(Location("aaa"))
 P.str("aba").run(Location("aba"))
+P.str("aba").run(Location("abadfe"))
 
 P.regex("aba+".r).run(Location("aaa"))
 P.regex("aba+".r).run(Location("ab"))
@@ -25,6 +26,7 @@ intParser.run(Location("123"))
 intParser.run(Location("-19abc"))
 intParser.run(Location("abc"))
 
+val p1 = P.regex("-?\\d+(\\.\\d+)?".r)
 
 val doubleParser: Parser[Double] = Parser{
   loc =>

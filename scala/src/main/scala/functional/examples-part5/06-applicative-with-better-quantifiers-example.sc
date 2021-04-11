@@ -1,7 +1,8 @@
+
 import functional.part3.applicative._
 import functional.part3.functor._
-import functional.part5.parserCombinatorApplicativeWithBadQuanitfiers._
-import functional.part5.parserCombinatorApplicativeWithBadQuanitfiers.{Parser => P}
+import functional.part5.parserCombinatorApplicativeWithBetterQuanitfiers._
+import functional.part5.parserCombinatorApplicativeWithBetterQuanitfiers.{Parser => P}
 
 // Now with applicative we can combine multiple parser one after another
 
@@ -30,17 +31,24 @@ betweenTwoAndFour.run(Location("baaa"))
 betweenTwoAndFour.run(Location("bbaaa"))
 
 
-// If we try to use this, we will have a StackOverflow exception
-
-//val oneOrMoreABs = (P.str("a") | P.str("b")).oneOrMoreTimes()
-//
-//oneOrMoreABs.run(Location(""))
-//oneOrMoreABs.run(Location("a"))
-//oneOrMoreABs.run(Location("ab"))
-//oneOrMoreABs.run(Location("aaa"))
-//oneOrMoreABs.run(Location("baaa"))
-//oneOrMoreABs.run(Location("bbaaa"))
+// Now it will work!
+val oneOrMoreABs = (P.str("a") | P.str("b")).oneOrMoreTimes()
 
 
+oneOrMoreABs.run(Location(""))
+oneOrMoreABs.run(Location("a"))
+oneOrMoreABs.run(Location("ab"))
+oneOrMoreABs.run(Location("aaa"))
+oneOrMoreABs.run(Location("baaa"))
+oneOrMoreABs.run(Location("bbaaa"))
+oneOrMoreABs.run(Location("bbaaac"))
 
+val zeroOrMoreABs = (P.str("a") | P.str("b")).zeroOrMoreTimes()
 
+zeroOrMoreABs.run(Location(""))
+zeroOrMoreABs.run(Location("c"))
+zeroOrMoreABs.run(Location("a"))
+zeroOrMoreABs.run(Location("ab"))
+zeroOrMoreABs.run(Location("aaa"))
+zeroOrMoreABs.run(Location("baaa"))
+zeroOrMoreABs.run(Location("bbaaac"))

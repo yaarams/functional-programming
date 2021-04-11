@@ -2,7 +2,6 @@ package functional.part5
 
 import functional.part3.applicative._
 import functional.part3.functor._
-import functional.part3.monad._
 
 import scala.util.matching.Regex
 import scala.util.matching.Regex.Match

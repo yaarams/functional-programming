@@ -1,12 +1,15 @@
 package functional.part5
 
-import functional.part3.functor._
 import functional.part3.applicative._
+import functional.part3.functor._
+import functional.part3.monad._
 
+import scala.annotation.tailrec
+import scala.collection.mutable
 import scala.util.matching.Regex
 import scala.util.matching.Regex.Match
 
-object parserCombinatorApplicative {
+object parserCombinatorMonad {
 
   // represents a location in the parsed string, input is the full string, offset is where 
   // the current parsing head is
@@ -23,6 +26,7 @@ object parserCombinatorApplicative {
       case lastLineStart => offset - lastLineStart
     }
   }
+
 
   // location will indicate where the error happened and some message about what went wrong
   case class ParserError(loc: Location, msg: String)
@@ -62,25 +66,52 @@ object parserCombinatorApplicative {
       ParserError(err.loc, f"Expected '$name' at ${err.loc.offset}" +
         f" but found: ${err.loc.input.slice(err.loc.offset, err.loc.offset + 10)}")
     )
+
+    def or[B >: A] (pb: Parser[B]): Parser[B] = Parser (
+      loc =>
+        this.run(loc) match {
+          case succ@Success(_, _) => succ
+          case Failure(_) => pb.run(loc)
+        }
+    )
+
+    inline def |[B >: A] (pb: Parser[B]): Parser[B] = or(pb)
+
+    // derived from OR
+
+    def optional(): Parser[Option[A]] =
+      Applicative[Parser].map(this, Some(_)) | Applicative[Parser].pure(None)
+
+    // derived from repeat and atMost
+    def times(minimum: Int, maximum: Int): Parser[List[A]] =
+      Applicative[Parser].map2(this.repeat(minimum), this.atMost(maximum - minimum), (p1, p2) => p1 ++ p2)
+
+    // BETTER QUNTIFIERS, defined as basic parsers (a low level implmentation, not through combinators)
+    def repeat(times: Int): Parser[List[A]] = Parser.repeat(this, times)
+    def atMost(times: Int): Parser[List[A]] = Parser.atMost(this, times)
+
+    // these definition are fine but because of atMost implemnetation this will actually
+    // crash the stack :(
+    def zeroOrMoreTimes(): Parser[List[A]] = times(0, Int.MaxValue)
+    def oneOrMoreTimes(): Parser[List[A]] = times(1, Int.MaxValue)
   }
 
-
   // functor applicative for parser
-  given Applicative[Parser] with {
+  given Monad[Parser] with {
 
     def pure[A](a: A): Parser[A] = Parser {
       loc => Success(a, loc) // pure values don't consume anything from the input
     }
 
-    override def map2[A, B, C](pa: Parser[A], pb: Parser[B], f: (A, B) => C): Parser[C] = Parser {
+    def flatMap[A, B](pa: Parser[A], f: A => Parser[B]): Parser[B] = Parser {
       loc0 =>
         pa.run(loc0) match {
           case err@Failure(_) => err
           case Success(v1, loc1) =>
-            pb.run(loc1) match {
+            f(v1).run(loc1) match {
               case err@Failure(_) => err
               case Success(v2, loc2) =>
-                Success(f(v1, v2), loc2)
+                Success(v2, loc2)
             }
         }
     }
@@ -90,7 +121,7 @@ object parserCombinatorApplicative {
   extension [A, B](pa: Parser[A]) {
    
     def **(pb: Parser[B]): Parser[(A, B)] = Applicative[Parser].product(pa, pb)
-    
+
   }
   
   // --------------------------------- // 
@@ -135,6 +166,52 @@ object parserCombinatorApplicative {
             )
         }
     }
+
+    // BETTER QUANTIFIERS: We can't define them the way we want with combinators, lets just make them into basic
+    // operations, and we will have it efficient by implementing it with a tail recursion
+    def repeat[A](pa: Parser[A], times: Int): Parser[List[A]] = Parser(
+      loc => {
+
+        @tailrec
+        def go(collected: List[A], location: Location, n: Int): Result[List[A]] = {
+          if (n <= 0){
+            Success(collected, location)
+          } else {
+            pa.run(location) match {
+              case err@Failure(_) => err
+              case Success(v, nextLocation) =>
+                go(v :: collected, nextLocation, n - 1)
+            }
+          }
+        }
+
+        // we assembled the list in the opposite order for efficiency, now we reverse it to get the correct order
+        Functor[Result].map(go(List.empty, loc, times), _.reverse)
+      }
+    )
+
+    def atMost[A](pa: Parser[A], times: Int): Parser[List[A]] = Parser(
+      loc => {
+
+        @tailrec
+        def go(collected: List[A], location: Location, n: Int): Result[List[A]] = {
+          if (n <= 0){
+            Success(collected, location)
+          } else {
+            pa.run(location) match {
+              case err@Failure(_) =>
+                Success(collected, location) // The only difference between this implementation and repeat
+              case Success(v, nextLocation) =>
+                go(v :: collected, nextLocation, n - 1)
+            }
+          }
+        }
+
+        // we assembled the list in the opposite order for efficiency, now we reverse it to get the correct order
+        Functor[Result].map(go(List.empty, loc, times), _.reverse)
+      }
+    )
+
   }
 
 }
