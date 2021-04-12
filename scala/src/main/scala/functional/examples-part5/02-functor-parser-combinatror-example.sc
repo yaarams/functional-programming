@@ -20,7 +20,7 @@ intParser.run(Location("123"))
 intParser.run(Location("-19abc"))
 intParser.run(Location("abc"))
 
-val doubleParser = P.regex("-?\\d+".r).map(_.toDouble).desc("double number")
+val doubleParser = P.regex("-?\\d+(\\.\\d+)?".r).map(_.toDouble).desc("double number")
 
 doubleParser.run(Location("123"))
 doubleParser.run(Location("-19.25abc"))

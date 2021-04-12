@@ -64,15 +64,11 @@ object parserCombinatorApplicativeWithBadQuanitfiers {
         f" but found: ${err.loc.input.slice(err.loc.offset, err.loc.offset + 10)}")
     )
 
-    def or[B >: A] (pb: Parser[B]): Parser[B] = Parser (
-      loc =>
-        this.run(loc) match {
-          case succ@Success(_, _) => succ
-          case Failure(_) => pb.run(loc)
-        }
-    )
 
-    inline def |[B >: A] (pb: Parser[B]): Parser[B] = or(pb)
+    def or[B >: A] (pb: Parser[B]): Parser[B] = Parser.or(this, pb)
+
+    inline def |[B >: A] (pb: Parser[B]): Parser[B] = Parser.or(this, pb)
+
 
     // derived from OR
 
@@ -169,6 +165,14 @@ object parserCombinatorApplicativeWithBadQuanitfiers {
                   + f" but got '${loc.input.slice(loc.offset, loc.offset + 10)}'"
               )
             )
+        }
+    }
+
+    def or[A] (pa: Parser[A], pb: Parser[A]): Parser[A] = Parser {
+      loc =>
+        pa.run(loc) match {
+          case succ@Success(_, _) => succ
+          case Failure(_) => pb.run(loc)
         }
     }
   }

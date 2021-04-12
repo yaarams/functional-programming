@@ -66,15 +66,9 @@ object parserCombinatorApplicativeWithBetterQuanitfiers {
         f" but found: ${err.loc.input.slice(err.loc.offset, err.loc.offset + 10)}")
     )
 
-    def or[B >: A] (pb: Parser[B]): Parser[B] = Parser (
-      loc =>
-        this.run(loc) match {
-          case succ@Success(_, _) => succ
-          case Failure(_) => pb.run(loc)
-        }
-    )
+    def or[B >: A] (pb: Parser[B]): Parser[B] = Parser.or(this, pb)
 
-    inline def |[B >: A] (pb: Parser[B]): Parser[B] = or(pb)
+    inline def |[B >: A] (pb: Parser[B]): Parser[B] = Parser.or(this, pb)
 
     // derived from OR
 
@@ -89,10 +83,24 @@ object parserCombinatorApplicativeWithBetterQuanitfiers {
     def repeat(times: Int): Parser[List[A]] = Parser.repeat(this, times)
     def atMost(times: Int): Parser[List[A]] = Parser.atMost(this, times)
 
-    // these definition are fine but because of atMost implemnetation this will actually
-    // crash the stack :(
     def zeroOrMoreTimes(): Parser[List[A]] = times(0, Int.MaxValue)
     def oneOrMoreTimes(): Parser[List[A]] = times(1, Int.MaxValue)
+
+    // another useful variation of quantifiers (with delimiters)
+    def oneOrMoreTimes[B](delimiterParser: Parser[B]): Parser[List[A]] =
+      // for example with x and a delimiter of ',', this is just saying: x followedBy (,x)*
+      (this ** (delimiterParser >> this).zeroOrMoreTimes()).map((h, t) => h :: t)
+
+    def zeroOrMoreTimes[B](delimiterParser: Parser[B]): Parser[List[A]] =
+       oneOrMoreTimes(delimiterParser) | Applicative[Parser].pure(List.empty)
+
+    // same versions but with string delimiter
+    def oneOrMoreTimes(delimiter: String): Parser[List[A]] =
+      this.oneOrMoreTimes(Parser.str(delimiter))
+
+    def zeroOrMoreTimes(delimiter: String): Parser[List[A]] =
+      this.zeroOrMoreTimes(Parser.str(delimiter))
+
   }
 
   // functor applicative for parser
@@ -163,6 +171,14 @@ object parserCombinatorApplicativeWithBetterQuanitfiers {
                   + f" but got '${loc.input.slice(loc.offset, loc.offset + 10)}'"
               )
             )
+        }
+    }
+
+    def or[A] (pa: Parser[A], pb: Parser[A]): Parser[A] = Parser {
+      loc =>
+        pa.run(loc) match {
+          case succ@Success(_, _) => succ
+          case Failure(_) => pb.run(loc)
         }
     }
 
